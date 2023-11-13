@@ -129,7 +129,7 @@ recordRoutes.route("products/:id").delete(async (req, res) => {
 });
 
 //raport
-recordRoutes.route("products/raport").get(async (req, res) => {
+recordRoutes.route("/products/raport").get(async (req, res) => {
   const db = dbo.getDb();
   try {
     const raport = await db
