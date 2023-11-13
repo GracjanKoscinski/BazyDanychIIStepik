@@ -4,7 +4,7 @@ const dbo = require("../db/conn");
 const { ObjectId } = require("mongodb");
 
 // Dodawanie nowego produktu
-recordRoutes.route("/Zadanie_stepik/products").post(async function (req, res) {
+recordRoutes.route("/products").post(async function (req, res) {
   const db = dbo.getDb();
   const { nazwa, cena, opis, ilosc, jednostka_miary } = req.body;
 
@@ -39,7 +39,7 @@ recordRoutes.route("/Zadanie_stepik/products").post(async function (req, res) {
 });
 
 // get z filtrowaniem i sortowaniem po cenie
-recordRoutes.route("/Zadanie_stepik/products").get(async function (req, res) {
+recordRoutes.route("/products").get(async function (req, res) {
   const db = dbo.getDb();
   let query = {};
 
@@ -77,43 +77,40 @@ recordRoutes.route("/Zadanie_stepik/products").get(async function (req, res) {
 });
 
 // Edycja istniejacego produktu
-recordRoutes
-  .route("/Zadanie_stepik/products/:id")
-  .put(async function (req, res) {
-    const db = dbo.getDb();
-    const { nazwa, cena, opis, ilosc, jednostka_miary } = req.body;
+recordRoutes.route("products/:id").put(async function (req, res) {
+  const db = dbo.getDb();
+  const { nazwa, cena, opis, ilosc, jednostka_miary } = req.body;
 
-    try {
-      const existingProduct = await db
-        .db("Zadanie_stepik")
-        .collection("Products")
-        .findOne({ _id: new ObjectId(req.params.id) });
-      await db
-        .db("Zadanie_stepik")
-        .collection("Products")
-        .updateOne(
-          { _id: new ObjectId(req.params.id) },
-          {
-            $set: {
-              nazwa: nazwa || existingProduct.nazwa,
-              cena: cena || existingProduct.cena,
-              opis: opis || existingProduct.opis,
-              ilosc: ilosc || existingProduct.ilosc,
-              jednostka_miary:
-                jednostka_miary || existingProduct.jednostka_miary,
-            },
-          }
-        );
+  try {
+    const existingProduct = await db
+      .db("Zadanie_stepik")
+      .collection("Products")
+      .findOne({ _id: new ObjectId(req.params.id) });
+    await db
+      .db("Zadanie_stepik")
+      .collection("Products")
+      .updateOne(
+        { _id: new ObjectId(req.params.id) },
+        {
+          $set: {
+            nazwa: nazwa || existingProduct.nazwa,
+            cena: cena || existingProduct.cena,
+            opis: opis || existingProduct.opis,
+            ilosc: ilosc || existingProduct.ilosc,
+            jednostka_miary: jednostka_miary || existingProduct.jednostka_miary,
+          },
+        }
+      );
 
-      return res.json({ message: "Produkt zaktualizowany pomyślnie" });
-    } catch (error) {
-      console.error("Błąd podczas edycji produktu:", error);
-      return res.json({ error: "Błąd podczas edycji produktu:" });
-    }
-  });
+    return res.json({ message: "Produkt zaktualizowany pomyślnie" });
+  } catch (error) {
+    console.error("Błąd podczas edycji produktu:", error);
+    return res.json({ error: "Błąd podczas edycji produktu:" });
+  }
+});
 
 //usuwanie po ID
-recordRoutes.route("/Zadanie_stepik/products/:id").delete(async (req, res) => {
+recordRoutes.route("products/:id").delete(async (req, res) => {
   const db = dbo.getDb();
   const productId = req.params.id;
   try {
@@ -132,7 +129,7 @@ recordRoutes.route("/Zadanie_stepik/products/:id").delete(async (req, res) => {
 });
 
 //raport
-recordRoutes.route("/Zadanie_stepik/Products/raport").get(async (req, res) => {
+recordRoutes.route("products/raport").get(async (req, res) => {
   const db = dbo.getDb();
   try {
     const raport = await db
